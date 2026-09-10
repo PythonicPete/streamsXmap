@@ -1,65 +1,65 @@
-StreamXMap 🗺️🎥
-StreamXMap is a high-performance, real-time geospatial platform that bridges the gap between content creators and viewers. By combining interactive mapping with live stream monitoring, it allows users to discover active creators broadcasting live across YouTube and Twitch right on a live global map.
+# StreamXMap 🗺️🎥⚡
 
-🛠️ The Tech Stack (Under the Hood)
-Every component, library, and protocol powering the ecosystem:
+StreamXMap is a real-time, high-performance geospatial streaming platform that maps live broadcasters (YouTube & Twitch) onto an interactive global map. It features automated stream state detection, spatial database indexing, and over-the-air (OTA) mobile updates.
 
-Mobile Client (Flutter)
-Framework: Flutter (Dart) for cross-platform mobile compilation.
+---
 
-Map Engine: Google Maps Flutter Plugin for real-time marker rendering and geospatial UI.
+## 🛠️ Complete Technical Architecture & Tech Stack
 
-Navigation & Links: url_launcher for handling external redirects and APK updates.
+### **1. Frontend Mobile Client (Flutter / Dart)**
+* **Core Framework:** **Flutter SDK** (Dart) compiled for native Android performance.
+* **Geospatial UI:** **`google_maps_flutter`** plugin for rendering vector maps, custom marker styling, and live camera movements.
+* **Location Services:** **`geolocator`** package for high-accuracy GPS hardware polling and coordinate retrieval.
+* **In-App Navigation & OTA:** **`url_launcher`** for opening external links and handling direct APK download intents.
+* **Authentication Flow:** Custom deep-link URL scheme handler (`streamxmap://callback`) parsing incoming JWT payloads from OAuth redirects.
+* **Version Control Client:** Static runtime configuration comparing local build versions against remote JSON metadata payloads.
 
-App Architecture: Stateful widget lifecycle management, custom URL schemes (streamxmap://callback) for secure OAuth handoffs.
+### **2. Backend Server (Node.js & TypeScript)**
+* **Runtime Environment:** **Node.js** executed with **TypeScript** for compile-time type safety.
+* **Web Framework:** **Express.js** routing engine managing RESTful endpoints:
+  * `POST /api/streams/golive` — Triggers automated YouTube checks and spatial coordinate updates.
+  * `GET /api/version` — Serves current APK version metadata for OTA mobile checks.
+* **Real-Time Communication:** **WebSockets** (or Socket-based architecture) for bidirectional, low-latency live location and stream state broadcasting across connected clients.
+* **HTTP Client:** **Axios** managing external REST calls to Google/YouTube APIs with bearer token injection.
+* **Security & Environment:** **Dotenv** for secure runtime secret management.
 
-Versioning System: Client-side OTA version verification comparing local builds against remote payloads.
+### **3. Database & Spatial Indexing (PostgreSQL & PostGIS)**
+* **Relational Database:** **PostgreSQL** hosted on Render.
+* **Geospatial Engine:** **PostGIS** extension utilizing native spatial types and functions:
+  * `geography(POINT, 4326)` — Spatial column type utilizing WGS 84 latitude/longitude coordinates.
+  * `ST_SetSRID()` & `ST_MakePoint()` — Geometrical constructor functions for precise coordinate wrapping.
+* **Automated Migration Layer:** On-boot asynchronous `initDB()` schema validator executing conditional `CREATE TABLE IF NOT EXISTS` and `ALTER TABLE ADD COLUMN IF NOT EXISTS` queries for zero-downtime evolution.
 
-Backend Server (Node.js & TypeScript)
-Runtime: Node.js powered by TypeScript for strict typing and scalable execution.
+### **4. Authentication & Security Layer**
+* **Auth Middleware:** **Passport.js** authentication framework.
+* **OAuth 2.0 Strategy:** **`passport-google-oauth20`** handling Google account consent screens and profile extraction.
+* **Token Issuance:** **`jsonwebtoken` (JWT)** generating stateless 7-day session tokens (`jwt.sign` / verification middleware).
+* **Token Persistence:** Secure database storage and refresh handling of Google OAuth Access and Refresh tokens.
 
-Framework: Express.js for handling high-frequency RESTful endpoints (/api/streams/golive, /api/version).
+### **5. External APIs & Third-Party Integrations**
+* **YouTube Data API v3:**
+  * **Search API (`/search`):** Queries user's active live broadcasts (`eventType='live'`) to catch standard and OBS-streamed events.
+  * **Broadcasts API:** Fetches live stream IDs, video metadata, and titles.
+* **Twitch API:** Stream state verification and channel metadata parsing.
 
-HTTP Client: Axios for robust external API communication with Google/YouTube services.
+### **6. Deployment & Distribution Infrastructure**
+* **Cloud Hosting:** **Render** cloud platform with integrated auto-deploy CI/CD pipeline from GitHub.
+* **Binary Distribution:** **GitHub Releases** acting as a dedicated artifact repository hosting compiled `app-release.apk` binaries.
 
-Environment Configuration: Dotenv for secure runtime secret management.
+---
 
-Database & Geospatial Engine
-Primary Database: PostgreSQL relational database hosted on Render.
+## ✨ Core Features
 
-Geospatial Extension: PostGIS utilizing geography(POINT, 4326) data types, ST_SetSRID, and ST_MakePoint for precise coordinate indexing and spatial queries.
+* **Live Geospatial Pins:** Real-time markers pinned to exact GPS coordinates of active broadcasters.
+* **Smart Go-Live Automation:** One-tap action that queries the YouTube API, extracts active stream metadata, and anchors it to the user's live position.
+* **Instant OTA Updates:** Automatic startup version checking that prompts users with an in-app dialog to download fresh APK builds straight from GitHub Releases.
 
-Automated Migration: Custom on-boot initDB() schema validation layer ensuring zero-downtime table and column evolution.
+---
 
-Authentication & Security
-Auth Framework: Passport.js utilizing passport-google-oauth20 strategy.
+## 📲 Download & Installation
 
-Session Management: Stateless JSON Web Tokens (JWT) issued via jsonwebtoken for secure API authorization.
+Grab the latest production-ready Android APK directly from the [GitHub Releases Page](https://github.com/PythonicPete/streamsXmap/releases/latest).
 
-Token Lifecycle: Secure handling and database persistence of Google OAuth Access Tokens and Refresh Tokens.
-
-External APIs & Integrations
-YouTube Data API v3: Leveraged via both the Search API (to dynamically catch OBS and standard RTMP streams) and the Live Broadcasts API.
-
-Twitch API Integration: Stream state verification and metadata extraction.
-
-Deployment & Distribution
-Backend Hosting: Render cloud platform with automated CI/CD pipeline.
-
-App Distribution: GitHub Releases for direct APK hosting, version control, and seamless OTA updates.
-
-✨ Core Features
-Live Geospatial Pins: Creators broadcast their coordinates, placing a live-updating marker directly on the map.
-
-Smart Go-Live Automation: One-tap detection automatically queries the YouTube API, extracts the active stream ID and title, and anchors it to the user's GPS coordinates.
-
-In-App OTA Updates: Built-in update checker detects newer version tags on startup and prompts users to download fresh APK builds instantly.
-
-📲 Download & Installation
-Grab the latest production-ready Android APK directly from the GitHub Releases Page.
-
-Download app-release.apk.
-
-Tap to install on your Android device.
-
-Sign in with Google and broadcast your stream to the map!
+1. Download `app-release.apk`.
+2. Tap to install on your Android device.
+3. Sign in with Google and broadcast your stream live to the map!
