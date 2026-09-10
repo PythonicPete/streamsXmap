@@ -8,7 +8,7 @@ StreamXMap is a real-time, map-based platform that aggregates live streams (YouT
 - **In-App Updates:** Built-in OTA version verification that alerts users when a fresh APK release is available.
 
 ## Download Android App (APK)
-Grab the latest production-ready Android build directly from the [Releases Page](https://github.com/PythonicPete/streamxmap/releases/latest).
+Grab the latest production-ready Android build directly from the [Releases Page](https://github.com/PythonicPete/streamsXmap/releases/tag/v1.0.0).
 
 ## Tech Stack
 - **Frontend / Mobile:** Flutter, Google Maps, WebSockets
